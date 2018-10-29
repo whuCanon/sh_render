@@ -408,8 +408,8 @@ void Model::generateRenderCoeffs()
             for (int i = 0; i < SAMPLE_NUM; i++)
             {
                 //Calculate cosine term for this sample
-                double phi = 2*PI * (1.0f * i / SAMPLE_NUM);
-                double theta = PI - acos(2*(1.0f * i / SAMPLE_NUM) - 1);
+                double phi = 2*PI * (1.0 * i / SAMPLE_NUM);
+                double theta = PI - acos(2*(1.0 * i / SAMPLE_NUM) - 1);
 //                double phi = 2*PI * (rand() / double(RAND_MAX));
 //                double theta = PI - acos(2*(rand()/double(RAND_MAX)) - 1);
                 Vector3f sample = sh::ToVector(phi, theta).cast<float>();
@@ -444,12 +444,6 @@ void Model::generateRenderCoeffs()
             outfile.write((const char* )v->render_coeffs, SH_NUM*sizeof(double));
 
     outfile.close();
-//    ofstream testout("test.txt");
-//    for (auto m = meshes_.begin(); m != meshes_.end(); m++)
-//       for (auto v = m->vertices.begin(); v != m->vertices.end(); v++)
-//           for (auto c : v->render_coeffs)
-//               testout << c << endl;
-//    testout.close();
 }
 
 

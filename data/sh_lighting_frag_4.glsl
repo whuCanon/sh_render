@@ -17,6 +17,6 @@ void main(void)
 		c = c + vs.render_coeffs[i] * light_coeffs[i];
 	}
 	c = c / 255;
-	//if (c < 0)	c = 0.3;
+	if (c < 0)	c = 0.3;
 	color = vec4(c, c, c, 1);
 }

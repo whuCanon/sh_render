@@ -91,18 +91,29 @@ void SHLightingApp::onUpdate(float dt)
     background_->draw();
     glUseProgram(model_program_);
 
-    // compute transforms
+    // compute model transforms
     Matrix4f model_trans = input_proc_->getModelTransform();
     Matrix4f model_view_proj = proj_ * view_ * model_trans;
-    //Matrix4f normal_trans = model_trans.inverse().transpose();
+
+    // compute light transforms
+    Matrix3f temp_trans;
+    temp_trans << model_trans(0,0), model_trans(0,1), model_trans(0,2),
+                        model_trans(1,0), model_trans(1,1), model_trans(1,2),
+                        model_trans(2,0), model_trans(2,1), model_trans(2,2);
+    Quaterniond light_trans(temp_trans.cast<double>().inverse());
+    unique_ptr<sh::Rotation> light_rotation = sh::Rotation::Create(L, light_trans.normalized());
+    vector<float> temp_coeffs, temp_rotated_coeffs;
+    for (int i = 0; i < SH_NUM; i++)
+        temp_coeffs.push_back(light_coeffs_[i]);
+    light_rotation->Apply(temp_coeffs, &temp_rotated_coeffs);
+    for (int i = 0; i < SH_NUM; i++)
+        rotated_light_coeffs_[i] = temp_rotated_coeffs[i];
 
     // delivery transforms
     glUniformMatrix4fv(glGetUniformLocation(model_program_, "model_view_proj"),
         1, false, model_view_proj.data());
-//    glUniformMatrix4fv(glGetUniformLocation(model_program_, "normal_trans"),
-//        1, false, normal_trans.data());
     glUniform1fv(glGetUniformLocation(model_program_, "light_coeffs"),
-        SH_NUM, light_coeffs_);
+        SH_NUM, rotated_light_coeffs_);
     model_->draw(model_program_);
 
 }
