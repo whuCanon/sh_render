@@ -405,43 +405,46 @@ void Model::generateRenderCoeffs()
     {
         for (auto v = m->vertices.begin(); v != m->vertices.end(); v++)
         {
+            int real_sampled = 0;
+            int sqrt_num = sqrt(static_cast<double>(SAMPLE_NUM));
             for (int i = 0; i < SAMPLE_NUM; i++)
             {
-                //Calculate cosine term for this sample
-                double phi = 2*PI * (1.0 * i / SAMPLE_NUM);
-                double theta = PI - acos(2*(1.0 * i / SAMPLE_NUM) - 1);
+                // isometric (or random) uniform sampling on sphere
+                double phi = 2*PI * ((0.5+i/sqrt_num) / sqrt_num);
+                double theta = acos(1 - 2 * ((0.5+i%sqrt_num) / sqrt_num));
 //                double phi = 2*PI * (rand() / double(RAND_MAX));
 //                double theta = PI - acos(2*(rand()/double(RAND_MAX)) - 1);
                 Vector3f sample = sh::ToVector(phi, theta).cast<float>();
 
                 float dot = sample.dot(v->normal);
-                if (dot < 0)    continue;
+                if (dot <= 0)    continue;   real_sampled++;
 
-                //Fill in a RAY structure for this sample
+                // fill in a Ray structure for this sample and determine whether be blocked
                 Ray ray(v->position + EPSILON*v->normal, sample);
                 bool ray_blocked = isRayBlocked(ray);
 
-                //Add the contribution of this sample to the coefficients
-                for (int l = 0; l <= L; l++){
-                    for (int m = -l; m <= l; m++){
-                        float contrib = static_cast<float>(sh::EvalSH(l, m, phi, theta));
-                        if (!ray_blocked)
-                            v->render_coeffs[sh::GetIndex(l,m)] += contrib;
+                // add the contribution of this sample to the coefficients
+                if (!ray_blocked){
+                    for (int l = 0; l <= L; l++){
+                        for (int m = -l; m <= l; m++){
+                            float contrib = static_cast<float>(sh::EvalSH(l, m, phi, theta));
+                            v->render_coeffs[sh::GetIndex(l,m)] += contrib * dot;
+                        }
                     }
                 }
             }
             // rescale coeffs
             for (int i = 0; i < SH_NUM; i++)
-                v->render_coeffs[i] *= 4*PI/(SAMPLE_NUM);
+                v->render_coeffs[i] *= 4*PI/(real_sampled);
         }
     }
 
-    //Save the coefficients to a file
+    // save the coefficients to a file
     ofstream outfile("render_coeffs.dat", ios::out | ios::binary | ios::trunc);
 
     for (auto m = meshes_.begin(); m != meshes_.end(); m++)
         for (auto v = m->vertices.begin(); v != m->vertices.end(); v++)
-            outfile.write((const char* )v->render_coeffs, SH_NUM*sizeof(double));
+            outfile.write((const char* )v->render_coeffs, SH_NUM*sizeof(float));
 
     outfile.close();
 }

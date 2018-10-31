@@ -98,8 +98,8 @@ void SHLightingApp::onUpdate(float dt)
     // compute light transforms
     Matrix3f temp_trans;
     temp_trans << model_trans(0,0), model_trans(0,1), model_trans(0,2),
-                        model_trans(1,0), model_trans(1,1), model_trans(1,2),
-                        model_trans(2,0), model_trans(2,1), model_trans(2,2);
+                  model_trans(1,0), model_trans(1,1), model_trans(1,2),
+                  model_trans(2,0), model_trans(2,1), model_trans(2,2);
     Quaterniond light_trans(temp_trans.cast<double>().inverse());
     unique_ptr<sh::Rotation> light_rotation = sh::Rotation::Create(L, light_trans.normalized());
     vector<float> temp_coeffs, temp_rotated_coeffs;
