@@ -281,6 +281,7 @@ void Model::loadModel(string path)
     dir_ = path.substr(0, path.find_last_of('/'));
 
     procNode(scene->mRootNode, scene);
+    createPlane();
     generateRenderCoeffs();
     for (auto m = meshes_.begin(); m != meshes_.end(); m++)
         m->setupMesh();
@@ -326,6 +327,8 @@ Mesh Model::procMesh(aiMesh* mesh, const aiScene* scene)
             v.texcoords = Vector2f::Zero();
         }
         vertices.push_back(v);
+
+        bound_.updateBound(v.position);
     }
     // process indices
     for (GLuint i = 0; i < mesh->mNumFaces; i++)
@@ -378,6 +381,52 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type,
 }
 
 
+void Model::createPlane()
+{
+    float l = bound_.length();
+    float w = bound_.width();
+    float h = bound_.height();
+
+    float x = bound_.xmin() - SCALE*h;
+    float y = bound_.ymin() - 10*EPSILON;
+    float z = bound_.zmin() - SCALE*h;
+
+    int count = sqrt(PLANE_VNUM);
+    float dx = (2*SCALE*h + l) / static_cast<float>(count);
+    float dz = (2*SCALE*h + w) / static_cast<float>(count);
+
+    vector<Vertex> vertices;
+    vector<GLuint> indices;
+    vector<Texture> textures;
+
+    for (int i = 0; i < count; i++){
+        for (int j = 0; j < count; j++)
+        {
+            Vertex v;
+            v.position  = Vector3f(x+i*dx, y, z+j*dz);
+            v.normal    = Vector3f(0, 1, 0);
+            v.texcoords = Vector2f(0, 0);
+            vertices.push_back(v);
+        }
+    }
+
+    for (int i = 0; i < count-1; i++){
+        for (int j = 0; j < count-1; j++)
+        {
+            indices.push_back(static_cast<GLuint>(   i  *count +   j   ));
+            indices.push_back(static_cast<GLuint>(   i  *count + (j+1) ));
+            indices.push_back(static_cast<GLuint>( (i+1)*count +   j   ));
+            indices.push_back(static_cast<GLuint>( (i+1)*count +   j   ));
+            indices.push_back(static_cast<GLuint>(   i  *count + (j+1) ));
+            indices.push_back(static_cast<GLuint>( (i+1)*count + (j+1) ));
+        }
+    }
+
+    bound_.setYmin(y);
+    meshes_.push_back(Mesh(vertices, indices, textures));
+}
+
+
 void Model::generateRenderCoeffs()
 {
     bool regenerate = false;
@@ -389,24 +438,24 @@ void Model::generateRenderCoeffs()
     }
 
     // if already generate, just read from file
-//    if(!regenerate)
-//    {
-//        for (auto m = meshes_.begin(); m != meshes_.end(); m++)
-//            for (auto v = m->vertices.begin(); v != m->vertices.end(); v++)
-//                infile.read((char* )v->render_coeffs, SH_NUM*sizeof(float));
+    if(!regenerate)
+    {
+        for (auto m = meshes_.begin(); m != meshes_.end(); m++)
+            for (auto v = m->vertices.begin(); v != m->vertices.end(); v++)
+                infile.read((char* )v->render_coeffs, SH_NUM*sizeof(float));
 
-//        infile.close();
-//        return;
-//    }
+        infile.close();
+        return;
+    }
 
     // regenerate render coefficients of all vertices
     srand(static_cast<unsigned>(time(nullptr)));
+    int sqrt_num = sqrt(static_cast<double>(SAMPLE_NUM));
     for (auto m = meshes_.begin(); m != meshes_.end(); m++)
     {
         for (auto v = m->vertices.begin(); v != m->vertices.end(); v++)
         {
             int real_sampled = 0;
-            int sqrt_num = sqrt(static_cast<double>(SAMPLE_NUM));
             for (int i = 0; i < SAMPLE_NUM; i++)
             {
                 // isometric (or random) uniform sampling on sphere
@@ -435,7 +484,7 @@ void Model::generateRenderCoeffs()
             }
             // rescale coeffs
             for (int i = 0; i < SH_NUM; i++)
-                v->render_coeffs[i] *= 4*PI/(real_sampled);
+                v->render_coeffs[i] *= real_sampled;
         }
     }
 

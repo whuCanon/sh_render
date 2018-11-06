@@ -52,6 +52,9 @@ namespace shr
         Model() = default;
         Model(string path) { loadModel(path); }
 
+        const BoundaryBox &bound() { return bound_; }
+        const vector<Mesh> &mesh() { return meshes_; }
+
         void draw(GLuint pgm);
 
     private:
@@ -60,10 +63,18 @@ namespace shr
         Mesh procMesh(aiMesh* mesh, const aiScene* scene);
         vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string type_name);
 
+        // create a plane under the model for shadow mapping.
+        // This plane is directly below the model and area = (4*height+length) * (4*height+width),
+        //     which assumes angle of shadow from light more than 60 degree can be ignored.
+        // The variable z of plane will be transfered into frag_shader as a flag to decide
+        //     if the vertex needs to be viewed as a plane vertex.
+        void createPlane();
+
         void generateRenderCoeffs();
         bool isRayBlocked(const Ray &ray);
 
         vector<Mesh> meshes_;
+        BoundaryBox  bound_;
         string dir_;
     };
 

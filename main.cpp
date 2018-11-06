@@ -63,6 +63,9 @@ void SHLightingApp::onInit()
     // background
     background_ = new shr::Background(bkg_file_);
 
+    // sh-light proc
+    shr::lightRotate(input_proc_->getCameraView(), light_coeffs_, &light_coeffs_);
+
     // object
     string vert_shader = string("../data/sh_lighting_vert_") + to_string(L) + ".glsl";
     string frag_shader = string("../data/sh_lighting_frag_") + to_string(L) + ".glsl";
@@ -75,6 +78,8 @@ void SHLightingApp::onInit()
     //glCullFace(GL_BACK);
     //glFrontFace(GL_CCW);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void SHLightingApp::onUpdate(float dt)
@@ -96,24 +101,22 @@ void SHLightingApp::onUpdate(float dt)
     Matrix4f model_view_proj = proj_ * view_ * model_trans;
 
     // compute light transforms
-    Matrix3f temp_trans;
-    temp_trans << model_trans(0,0), model_trans(0,1), model_trans(0,2),
-                  model_trans(1,0), model_trans(1,1), model_trans(1,2),
-                  model_trans(2,0), model_trans(2,1), model_trans(2,2);
-    Quaterniond light_trans(temp_trans.cast<double>().inverse());
-    unique_ptr<sh::Rotation> light_rotation = sh::Rotation::Create(L, light_trans.normalized());
-    vector<float> temp_coeffs, temp_rotated_coeffs;
+    shr::lightRotate(model_trans.inverse(), light_coeffs_, &rotated_light_coeffs_);
+
+    // compute plane transparent coeffs
+    float trans_coeff = 0;
     for (int i = 0; i < SH_NUM; i++)
-        temp_coeffs.push_back(light_coeffs_[i]);
-    light_rotation->Apply(temp_coeffs, &temp_rotated_coeffs);
-    for (int i = 0; i < SH_NUM; i++)
-        rotated_light_coeffs_[i] = temp_rotated_coeffs[i];
+        trans_coeff += rotated_light_coeffs_[i] * model_->mesh().back().vertices[0].render_coeffs[i];
 
     // delivery transforms
-    glUniformMatrix4fv(glGetUniformLocation(model_program_, "model_view_proj"),
+    glUniform1f(glGetUniformLocation(model_program_, "ymin"), model_->bound().ymin());
+    glUniform1f(glGetUniformLocation(model_program_, "basic_coeff"), trans_coeff);
+
+    glUniformMatrix4fv(glGetUniformLocation(model_program_, "model_view_proj"), \
         1, false, model_view_proj.data());
-    glUniform1fv(glGetUniformLocation(model_program_, "light_coeffs"),
+    glUniform1fv(glGetUniformLocation(model_program_, "light_coeffs"), \
         SH_NUM, rotated_light_coeffs_);
+
     model_->draw(model_program_);
 
 }
