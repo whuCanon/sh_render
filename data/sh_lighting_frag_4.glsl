@@ -27,7 +27,7 @@ void main(void)
 	if (c < 0)	c = 0.3;
 
 	if (vs.isPlane-1 > -1e-5 && vs.isPlane-1 < 1e-5)
-		color = vec4(c, c, c, b-c);
+		color = vec4(c, c, c, (b-c)/b);
 	else
 		color = vec4(c, c, c, 1);
 }

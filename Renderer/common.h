@@ -12,6 +12,9 @@ const int L = 4;                // spherical hamonics order
 const int SH_NUM = (L+1)*(L+1); // number of SH coefficients
 const int SAMPLE_NUM = 10000;     // number of Monte Carlo sampling, a square number is recomended
 
+// cubemap texture resolution
+const int CUBE_RES = 1024;
+
 // some test parameter
 const int SCALE = 1;
 

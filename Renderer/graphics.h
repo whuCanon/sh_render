@@ -10,7 +10,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
 
-#include "sh_geometry.h"
+#include "geometry.h"
 
 
 using namespace std;

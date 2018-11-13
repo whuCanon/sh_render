@@ -6,9 +6,8 @@
 #include <iostream>
 #include <FreeImage.h>
 
-#include "sh_background.h"
-#include "sh_geometry.h"
-#include "sh_graphics.h"
+#include "geometry.h"
+#include "graphics.h"
 #include "inputs.h"
 
 using namespace std;

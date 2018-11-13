@@ -1,13 +1,14 @@
-#include "sh_renderer.h"
+#include "background.h"
+#include "framework.h"
 
 using namespace std;
 using namespace shr;
 using namespace Eigen;
 
 
-Background::Background(string textures_path)
+Background::Background(string image_path)
 {
-    image_   = loadTexture(textures_path);
+    image_   = loadTexture(image_path);
     program_ = createBkgProgram();
     square_  = createBackground();
 }

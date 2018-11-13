@@ -15,7 +15,7 @@ namespace shr
     class Background
     {
     public:
-        Background(string textures_path);
+        Background(string image_path);
         ~Background();
 
         void draw();
@@ -24,12 +24,11 @@ namespace shr
         Background(const Background&) = delete;
         void operator=(const Background&) = delete;
 
-        GLuint image_;
-        GLuint square_;
+        GLuint image_;      // background image
+        GLuint square_;     // background vertices
         GLuint program_;
     };
 
-    GLuint loadBackground(string filename);
     GLuint createBkgProgram();
     GLuint createBackground();
 }

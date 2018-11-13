@@ -1,18 +1,22 @@
 SOURCES += \
-    main.cpp \
-    Renderer/sh_renderer.cpp \
-    Renderer/sh_geometry.cpp \
-    Renderer/sh_graphics.cpp \
     Renderer/inputs.cpp \
-    Renderer/sh_background.cpp
+    Renderer/background.cpp \
+    Renderer/geometry.cpp \
+    Renderer/graphics.cpp \
+    Renderer/framework.cpp \
+    Renderer/skybox.cpp \
+    renderer.cpp \
+    test.cpp \
+    coeffs_viewer.cpp
 
 HEADERS += \
-    Renderer/sh_graphics.h \
-    Renderer/sh_geometry.h \
-    Renderer/sh_renderer.h \
     Renderer/inputs.h \
-    Renderer/sh_background.h \
-    Renderer/common.h
+    Renderer/common.h \
+    Renderer/skybox.h \
+    Renderer/background.h \
+    Renderer/geometry.h \
+    Renderer/graphics.h \
+    Renderer/framework.h
 
 CONFIG += c++11
 

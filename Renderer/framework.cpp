@@ -1,4 +1,4 @@
-#include "sh_renderer.h"
+#include "framework.h"
 
 using namespace std;
 using namespace shr;

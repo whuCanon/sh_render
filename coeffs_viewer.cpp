@@ -2,10 +2,8 @@
 #include <iostream>
 #include <fstream>
 
-#include "Renderer/sh_renderer.h"
-#include "Renderer/sh_geometry.h"
-#include "Renderer/sh_graphics.h"
-#include "Renderer/inputs.h"
+#include "Renderer/skybox.h"
+#include "Renderer/framework.h"
 
 using namespace std;
 using namespace shr;
@@ -14,8 +12,8 @@ using namespace shr;
 class SHLightingApp : public shr::Renderer
 {
 public:
-    SHLightingApp(string bkg, string shl_coef, string obj)
-        :bkg_file_(bkg), shl_coef_file_(shl_coef), objfile_(obj) {}
+    SHLightingApp(string pano, string shl_coef, string obj)
+        :pano_file_(pano), shl_coef_file_(shl_coef), objfile_(obj) {}
     ~SHLightingApp() override = default;
 
 private:
@@ -24,14 +22,12 @@ private:
     void onShutdown() override;
 
     // parameters
-    //array<string, 6> cube_textures_;
-    string bkg_file_;       // background image file
+    string pano_file_;      // panorama file
     string shl_coef_file_;  // sh-light coeffs file
     string objfile_;        // model file
 
     // objects
-    //fw::SkyBox* skybox_;
-    shr::Background* background_;
+    Skybox* skybox_;
     shared_ptr<shr::Model> model_;
     GLuint model_program_;
 
@@ -41,7 +37,6 @@ private:
     shr::ObserverInput* input_proc_;
 
     Matrix4f view_, proj_;
-    GLuint bkg_textures_;
 };
 
 void SHLightingApp::onInit()
@@ -54,14 +49,11 @@ void SHLightingApp::onInit()
         ifs >> light_coeffs_[i];
 
     // input proc
-    input_proc_ = new shr::ObserverInput({ 3, 3, 3 }, { 0, 1, 0 });
+    input_proc_ = new shr::ObserverInput(Vector3f(1,0,0), Vector3f(0,1,0));
     this->setInputProcessor(input_proc_);
 
     // sky box
-    //skybox_ = new fw::SkyBox(cube_textures_);
-
-    // background
-    background_ = new shr::Background(bkg_file_);
+    skybox_ = new Skybox(pano_file_);
 
     // sh-light proc
     shr::lightRotate(input_proc_->getCameraView(), light_coeffs_, &light_coeffs_);
@@ -87,13 +79,12 @@ void SHLightingApp::onUpdate(float dt)
     glEnable(GL_DEPTH_TEST);
 
     view_ = input_proc_->getCameraView();
-    proj_ = shr::perspective(60, frameRatio(), 0.1f, 100);
+    proj_ = shr::perspective(60.f, frameRatio(), 0.1f, 100.f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
-    //skybox_->Draw(proj*view);
-    background_->draw();
+    skybox_->draw(proj_*view_);
     glUseProgram(model_program_);
 
     // compute model transforms
@@ -124,8 +115,7 @@ void SHLightingApp::onUpdate(float dt)
 void SHLightingApp::onShutdown()
 {
     delete input_proc_;
-    //delete skybox_;
-    glDeleteTextures(1, &bkg_textures_);
+    delete skybox_;
     glDeleteProgram(model_program_);
 }
 
@@ -133,13 +123,13 @@ int main(int argc, char *argv[])
 {
     try{
         if (argc < 4)
-            throw runtime_error("Usage: sh_lighting image coefficients.txt model");
+            throw runtime_error("Usage: sh_lighting panorama coefficients.txt model");
 
-        string bkg_file = argv[1];
+        string pano_file = argv[1];
         string sh_coef_file = argv[2];
         string objfile = argv[3];
 
-        SHLightingApp app(bkg_file, sh_coef_file, objfile);
+        SHLightingApp app(pano_file, sh_coef_file, objfile);
         app.setWindowSize(800, 600);
         app.setWindowTitle("Spherical Harmonics Lighting");
         app.run();
