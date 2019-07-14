@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <FreeImage.h>
+//#include <FreeImage.h>
 
 #include "geometry.h"
 #include "graphics.h"

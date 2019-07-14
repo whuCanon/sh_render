@@ -74,7 +74,7 @@ namespace shr
     Matrix4f lookAt(Vector3f const & eye, Vector3f const & center, Vector3f const & up);
     Matrix4f perspective(float fovy, float aspect, float zNear, float zFar);
 
-    void lightRotate(const Matrix4f &rotation, float coeffs[SH_NUM], float (*result)[SH_NUM]);
+    void lightRotate(const Matrix4f &rotation, float coeffs[SH_NUM], float (&result)[SH_NUM]);
 }
 
 #endif // SH_GEOMETRY_H

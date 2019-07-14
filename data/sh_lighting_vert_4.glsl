@@ -29,8 +29,8 @@ void main(void)
 	}
 	vs.render_coeffs[24] = render_coeffs_25;
 
-	if (ymin-position.y < 1e-5 && ymin-position.y > -1e-5)
-		vs.isPlane = 1;
-	else
+        if (ymin-position.y < 1e-5 && ymin-position.y > -1e-5)
+                vs.isPlane = 1;
+        else
 		vs.isPlane = 0;
 }

@@ -26,11 +26,14 @@ namespace shr {
 
         Matrix4f getCameraView() const { return camera_view_; }
         Matrix4f getModelTransform() const { return model_trans_; }
+        float getLightIntensity() const { return light_intensity_; }
 
-
+        void onKey(int key, int scancode, int action, int mods) override;
         void onMouseButton(int button, int action, int mods) override;
         void onMouseMove(double x, double y) override;
         void onMouseWheel(double offset_x, double offset_y) override;
+
+        bool flag = false;
 
     private:
         Vector3f camera_position_;
@@ -41,6 +44,7 @@ namespace shr {
         bool lbutton_down_ = false;
         bool rbutton_down_ = false;
         double lastx_ = 0, lasty_ = 0;
+        float light_intensity_ = 0.5f;
 
     };
 }

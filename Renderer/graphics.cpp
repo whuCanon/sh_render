@@ -1,4 +1,5 @@
 #include <fstream>
+#include <opencv2/opencv.hpp>
 
 #include "framework.h"
 
@@ -98,24 +99,30 @@ GLuint shr::loadTexture(string filename)
     GLuint textureID;
     glGenTextures(1, &textureID);
 
-    // load image
-    FREE_IMAGE_FORMAT formato = FreeImage_GetFileType(filename.c_str(), 0);//Automatocally detects the format(from over 20 formats!)
-    FIBITMAP* imagen = FreeImage_Load(formato, filename.c_str());
+    cv::Mat img = cv::imread(filename, cv::IMREAD_ANYCOLOR | cv::IMREAD_ANYDEPTH);
+    int w = img.cols;
+    int h = img.rows;
+//    // load image
+//    FREE_IMAGE_FORMAT formato = FreeImage_GetFileType(filename.c_str(), 0);//Automatocally detects the format(from over 20 formats!)
+//    FIBITMAP* imagen = FreeImage_Load(formato, filename.c_str());
 
-    FIBITMAP* temp = imagen;
-    imagen = FreeImage_ConvertTo32Bits(imagen);
-    FreeImage_Unload(temp);
+//    FIBITMAP* temp = imagen;
+//    imagen = FreeImage_ConvertTo32Bits(imagen);
+//    FreeImage_Unload(temp);
 
-    int w = static_cast<int>(FreeImage_GetWidth(imagen));
-    int h = static_cast<int>(FreeImage_GetHeight(imagen));
-    //cout<<"The size of the image is: "<<textureFile<<" es "<<w<<"*"<<h<<endl; //Some debugging code
+//    int w = static_cast<int>(FreeImage_GetWidth(imagen));
+//    int h = static_cast<int>(FreeImage_GetHeight(imagen));
+//    //cout<<"The size of the image is: "<<textureFile<<" es "<<w<<"*"<<h<<endl; //Some debugging code
 
-    char* pixeles = reinterpret_cast<char*>(FreeImage_GetBits(imagen));
-    //FreeImage loads in BGR format, so you need to swap some bytes(Or use GL_BGR).
+//    char* pixeles = reinterpret_cast<char*>(FreeImage_GetBits(imagen));
+//    //FreeImage loads in BGR format, so you need to swap some bytes(Or use GL_BGR).
 
     // Assign texture to ID
     glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixeles);
+    if(img.type() == 16)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, img.data);
+    else
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, w, h, 0, GL_BGRA, GL_FLOAT, img.data);
     glGenerateMipmap(GL_TEXTURE_2D);
     // Parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -124,7 +131,7 @@ GLuint shr::loadTexture(string filename)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    FreeImage_Unload(imagen);
+    //FreeImage_Unload(imagen);
     return textureID;
 }
 
@@ -212,12 +219,12 @@ void Mesh::setupMesh()
     // position
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
-//    // normal
-//    glEnableVertexAttribArray(1);
-//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, normal));
-//    // texture coordination
-//    glEnableVertexAttribArray(2);
-//    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texcoords));
+    // normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, normal));
+    // texture coordination
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texcoords));
     // render coeffs
     switch (L)
     {
@@ -274,9 +281,9 @@ void Model::loadModel(string path)
 {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-    //const aiScene* scene = importer.ReadFile(path, 0);
     if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
         throw runtime_error(string("Loading model error:") + importer.GetErrorString());
+        return ;
     }
     dir_ = path.substr(0, path.find_last_of('/'));
 

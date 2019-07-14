@@ -17,6 +17,13 @@ ObserverInput::ObserverInput(Vector3f camera_position, Vector3f camera_up)
 }
 
 
+void ObserverInput::onKey(int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ENTER)  flag = true;
+    if (key == GLFW_KEY_UP) light_intensity_ *= 1.02;
+    if (key == GLFW_KEY_DOWN) light_intensity_ /= 1.02;
+}
+
 void ObserverInput::onMouseButton(int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT){

@@ -1,8 +1,8 @@
 #version 330
 
 const int SH_NUM = 25;  // = 1, 4, 9, 16, 25
-const int SCALE = 2550000;
 
+uniform float intensity;
 uniform float basic_coeff;
 uniform float light_coeffs[SH_NUM];
 
@@ -21,10 +21,10 @@ void main(void)
 		c = c + vs.render_coeffs[i] * light_coeffs[i];
 	}
 
-	b = basic_coeff / SCALE / 1.1;
-	c = c / SCALE / 1.1;
+        b = basic_coeff * intensity;
+        c = c * intensity;
 
-	if (c < 0)	c = 0.3;
+        if (c < 0)	c = 0;
 
 	if (vs.isPlane-1 > -1e-5 && vs.isPlane-1 < 1e-5)
 		color = vec4(c, c, c, (b-c)/b);

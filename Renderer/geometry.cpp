@@ -100,7 +100,7 @@ Matrix4f shr::perspective(float fovy, float aspect, float zNear, float zFar)
 }
 
 
-void shr::lightRotate(const Matrix4f &rotation, float coeffs[SH_NUM], float (*result)[SH_NUM])
+void shr::lightRotate(const Matrix4f &rotation, float coeffs[SH_NUM], float (&result)[SH_NUM])
 {
     Matrix3f temp_trans;
     temp_trans << rotation(0,0), rotation(0,1), rotation(0,2),
@@ -117,5 +117,5 @@ void shr::lightRotate(const Matrix4f &rotation, float coeffs[SH_NUM], float (*re
     light_rotation->Apply(temp_coeffs, &temp_result);
 
     for (int i = 0; i < SH_NUM; i++)
-        (*result)[i] = temp_result[i];
+        result[i] = temp_result[i];
 }

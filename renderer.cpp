@@ -65,8 +65,10 @@
 //    shr::lightRotate(input_proc_->getCameraView(), light_coeffs_, &light_coeffs_);
 
 //    // object
-//    string vert_shader = string("../data/sh_lighting_vert_") + to_string(L) + ".glsl";
-//    string frag_shader = string("../data/sh_lighting_frag_") + to_string(L) + ".glsl";
+////    string sh_vert_shader = string("../data/sh_lighting_vert_") + to_string(L) + ".glsl";
+////    string sh_frag_shader = string("../data/sh_lighting_frag_") + to_string(L) + ".glsl";
+//    string vert_shader = string("../data/vert_shader.glsl");
+//    string frag_shader = string("../data/frag_shader.glsl");
 //    model_ = shr::loadModel(objfile_);
 //    model_program_ = shr::createProgram(vert_shader, frag_shader);
 
@@ -82,6 +84,10 @@
 
 //void SHLightingApp::onUpdate(float dt)
 //{
+//    if (input_proc_->flag)
+//        model_program_ = shr::createProgram(string("../data/sh_lighting_vert_") + to_string(L) + ".glsl", \
+//                                            string("../data/sh_lighting_frag_") + to_string(L) + ".glsl");
+
 //    glEnable(GL_DEPTH_TEST);
 
 //    view_ = input_proc_->getCameraView();
@@ -95,7 +101,7 @@
 //    glUseProgram(model_program_);
 
 //    // compute model transforms
-//    Matrix4f model_trans = input_proc_->getModelTransform();
+//    Matrix4f model_trans     = input_proc_->getModelTransform();
 //    Matrix4f model_view_proj = proj_ * view_ * model_trans;
 
 //    // compute light transforms

@@ -1,32 +1,21 @@
 //#include <array>
 //#include <iostream>
 //#include <fstream>
-//#include <glm/glm.hpp>
-//#include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtx/rotate_vector.hpp>
+//#include <Eigen/Dense>
+//#include <opencv2/opencv.hpp>
 
-//#include "Renderer/skybox.h"
-//#include "Renderer/framework.h"
+////#include "Renderer/skybox.h"
+////#include "Renderer/framework.h"
 
+//using namespace cv;
 //using namespace std;
 //using namespace Eigen;
 
-//int main(void)
+
+//int main(int argc, char **argv)
 //{
-////    Matrix4f mat1,mat2;
-////    mat1 << 1,0,0,1,
-////            0,1,0,2,
-////            0,0,1,3,
-////            0,0,0,1;
-////    mat2 << 0.5,0,0,0,
-////            0,0.5,0,0,
-////            0,0,0.5,0,
-////            0,0,0,1;
-////    cout << mat1*mat2 << endl;
-//    glm::mat4 mat = glm::scale(glm::vec3{0.5f,0.5f,0.5f});
-//    glm::mat4 mat2 = glm::mat4(1.0f);
-//    mat2[3][1] = 1;
-//    cout << (mat*mat2)[3][1] << endl;
+//    Mat img = imread(argv[1], IMREAD_ANYDEPTH | IMREAD_ANYCOLOR);
+//    cout << img.type();
 
 //    return 0;
 //}
