@@ -37,7 +37,7 @@ void ObserverInput::onMouseButton(int button, int action, int mods)
 
 void ObserverInput::onMouseMove(double x, double y)
 {
-    if (rbutton_down_)    // drag scene (camera move)
+    if (rbutton_down_ && !mode)    // drag scene (camera move)
     {
         double dx = (x - lastx_) * 0.01;
         double dy = (lasty_ - y) * 0.01;
@@ -56,17 +56,17 @@ void ObserverInput::onMouseMove(double x, double y)
         }
     }
 
-//    // drag model.
-//    // p' = cv-1 * Tc * cv * mT * p0.
-//    // (cv: camera_view, Tc: translation in camera axis, mT: model_trans.)
-//    if (rbutton_down_)
-//    {
-//        double dx = (x - lastx_) * 0.01;
-//        double dy = (lasty_ - y) * 0.01;
+    // drag model.
+    // p' = cv-1 * Tc * cv * mT * p0.
+    // (cv: camera_view, Tc: translation in camera axis, mT: model_trans.)
+    if (rbutton_down_ && mode)
+    {
+        double dx = (x - lastx_) * 0.01;
+        double dy = (lasty_ - y) * 0.01;
 
-//        Affine3f Tc(Translation3f(float(dx),float(dy),0));
-//        model_trans_ = camera_view_.inverse() * Tc * camera_view_ * model_trans_;
-//    }
+        Affine3f Tc(Translation3f(float(dx),float(dy),0));
+        model_trans_ = camera_view_.inverse() * Tc * camera_view_ * model_trans_;
+    }
 
     // rotate model
     //

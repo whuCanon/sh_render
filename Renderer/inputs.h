@@ -34,6 +34,7 @@ namespace shr {
         void onMouseWheel(double offset_x, double offset_y) override;
 
         bool flag = false;
+        bool mode = false;  // false means pano_viewer is set, true means render mode is set.
 
     private:
         Vector3f camera_position_;

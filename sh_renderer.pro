@@ -31,9 +31,9 @@ unix: PKGCONFIG += /usr/local/lib/pkgconfig/glfw3.pc
 unix: PKGCONFIG += /usr/local/lib/pkgconfig/assimp.pc
 unix: PKGCONFIG += /usr/local/lib/pkgconfig/opencv.pc
 
-unix: LIBS += -L/usr/local/lib/ -lfreeimage
-INCLUDEPATH += /usr/local/include
-DEPENDPATH += /usr/local/include
+#unix: LIBS += -L/usr/local/lib/ -lfreeimage
+#INCLUDEPATH += /usr/local/include
+#DEPENDPATH += /usr/local/include
 
 unix: LIBS += -L/usr/local/lib/ -lsh
 INCLUDEPATH += /usr/local/include/spherical_harmonics
@@ -45,4 +45,6 @@ unix:INCLUDEPATH += /usr/local/include/eigen3
 
 DISTFILES += \
     data/sh_lighting_frag_4.glsl \
-    data/sh_lighting_vert_4.glsl
+    data/sh_lighting_vert_4.glsl \
+    data/frag_shader.glsl \
+    data/vert_shader.glsl

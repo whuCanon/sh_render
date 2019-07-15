@@ -99,9 +99,10 @@ GLuint shr::loadTexture(string filename)
     GLuint textureID;
     glGenTextures(1, &textureID);
 
-    cv::Mat img = cv::imread(filename, cv::IMREAD_ANYCOLOR | cv::IMREAD_ANYDEPTH);
+    cv::Mat img = cv::imread(filename);
     int w = img.cols;
     int h = img.rows;
+    cv::flip(img, img, 0);
 //    // load image
 //    FREE_IMAGE_FORMAT formato = FreeImage_GetFileType(filename.c_str(), 0);//Automatocally detects the format(from over 20 formats!)
 //    FIBITMAP* imagen = FreeImage_Load(formato, filename.c_str());
@@ -119,10 +120,7 @@ GLuint shr::loadTexture(string filename)
 
     // Assign texture to ID
     glBindTexture(GL_TEXTURE_2D, textureID);
-    if(img.type() == 16)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, img.data);
-    else
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, w, h, 0, GL_BGRA, GL_FLOAT, img.data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, img.data);
     glGenerateMipmap(GL_TEXTURE_2D);
     // Parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
