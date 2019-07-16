@@ -91,8 +91,10 @@ void HarmonicIntegral<COEF_NUM>::solvePanoImage(const string image_path)
 
     for (auto& c : coef_){
         c = c * 4 * PI / count_;
+        if(c < 0)
+            c = 0;
         if(gray_pano_img.type() == 0)
-            c /= 2550;
+            c /= 500;
     }
 }
 

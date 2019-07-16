@@ -45,7 +45,7 @@ namespace shr {
         bool lbutton_down_ = false;
         bool rbutton_down_ = false;
         double lastx_ = 0, lasty_ = 0;
-        float light_intensity_ = 0.5f;
+        float light_intensity_ = 0.05f;
 
     };
 }

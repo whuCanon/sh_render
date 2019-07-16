@@ -6,7 +6,6 @@ SOURCES += \
     Renderer/framework.cpp \
     Renderer/skybox.cpp \
     renderer.cpp \
-    test.cpp \
     pano_viewer.cpp \
     Renderer/sh_sampler.cpp
 
@@ -46,5 +45,4 @@ unix:INCLUDEPATH += /usr/local/include/eigen3
 DISTFILES += \
     data/sh_lighting_frag_4.glsl \
     data/sh_lighting_vert_4.glsl \
-    data/frag_shader.glsl \
-    data/vert_shader.glsl
+    data/frag_shader.glsl
