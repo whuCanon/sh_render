@@ -99,24 +99,11 @@ GLuint shr::loadTexture(string filename)
     GLuint textureID;
     glGenTextures(1, &textureID);
 
+    // load image
     cv::Mat img = cv::imread(filename);
     int w = img.cols;
     int h = img.rows;
     cv::flip(img, img, 0);
-//    // load image
-//    FREE_IMAGE_FORMAT formato = FreeImage_GetFileType(filename.c_str(), 0);//Automatocally detects the format(from over 20 formats!)
-//    FIBITMAP* imagen = FreeImage_Load(formato, filename.c_str());
-
-//    FIBITMAP* temp = imagen;
-//    imagen = FreeImage_ConvertTo32Bits(imagen);
-//    FreeImage_Unload(temp);
-
-//    int w = static_cast<int>(FreeImage_GetWidth(imagen));
-//    int h = static_cast<int>(FreeImage_GetHeight(imagen));
-//    //cout<<"The size of the image is: "<<textureFile<<" es "<<w<<"*"<<h<<endl; //Some debugging code
-
-//    char* pixeles = reinterpret_cast<char*>(FreeImage_GetBits(imagen));
-//    //FreeImage loads in BGR format, so you need to swap some bytes(Or use GL_BGR).
 
     // Assign texture to ID
     glBindTexture(GL_TEXTURE_2D, textureID);
@@ -438,7 +425,7 @@ void Model::generateRenderCoeffs()
 
     ifstream infile("render_coeffs.dat", ios::in | ios::binary);
     if (!infile.is_open()){
-        //cout << "Unable to open render_coeffs.dat, need a few moment to regenerate coefficients...";
+        cout << "Unable to open render_coeffs.dat, need a few moment to regenerate coefficients...";
         regenerate = true;
     }
 

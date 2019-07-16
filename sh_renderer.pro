@@ -30,10 +30,6 @@ unix: PKGCONFIG += /usr/local/lib/pkgconfig/glfw3.pc
 unix: PKGCONFIG += /usr/local/lib/pkgconfig/assimp.pc
 unix: PKGCONFIG += /usr/local/lib/pkgconfig/opencv.pc
 
-#unix: LIBS += -L/usr/local/lib/ -lfreeimage
-#INCLUDEPATH += /usr/local/include
-#DEPENDPATH += /usr/local/include
-
 unix: LIBS += -L/usr/local/lib/ -lsh
 INCLUDEPATH += /usr/local/include/spherical_harmonics
 DEPENDPATH += /usr/local/include/spherical_harmonics

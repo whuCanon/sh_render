@@ -26,7 +26,7 @@ public:
     // for sampling from panorama
     void solvePanoImage(const string image_path);                           // read and sample SH_coef from panorama image
     // for estimating from single image
-    void solveRawImage(const string shading_path, const string normal_path);// read and process normal and shading image, solve LMS
+    //void solveRawImage(const string shading_path, const string normal_path);// read and process normal and shading image, solve LMS
     void writeSHPanoImage(const string image_path);                         // write the corresponding panorama using SH_coef
 
 private:

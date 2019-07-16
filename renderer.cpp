@@ -45,12 +45,6 @@
 
 //void SHLightingApp::onInit()
 //{
-//    // load or resampling sh coeffs parameters
-////    ifstream ifs(pano_file_);
-////    if (!ifs)
-////        throw runtime_error("open " + pano_file_ + " failed");
-////    for (int i = 0; i < SH_NUM; i++)
-////        ifs >> light_coeffs_[i];
 //    HarmonicIntegral<SH_NUM> harmonics(SAMPLE_NUM);
 //    harmonics.solvePanoImage(pano_file_);
 //    auto coeffs = harmonics.getCoefficients();
@@ -74,16 +68,11 @@
 //    // object
 //    string vert_shader = string("../data/sh_lighting_vert_") + to_string(L) + ".glsl";
 //    string frag_shader = string("../data/sh_lighting_frag_") + to_string(L) + ".glsl";
-////    string vert_shader = string("../data/vert_shader.glsl");
-////    string frag_shader = string("../data/frag_shader.glsl");
 //    model_ = shr::loadModel(objfile_);
 //    model_program_ = shr::createProgram(vert_shader, frag_shader);
 
 //    // setup opengl
 //    glViewport(0, 0, getWindowWidth(), getWindowHeight());
-//    //glEnable(GL_CULL_FACE);
-//    //glCullFace(GL_BACK);
-//    //glFrontFace(GL_CCW);
 //    glEnable(GL_DEPTH_TEST);
 //    glEnable(GL_BLEND);
 //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -91,10 +80,6 @@
 
 //void SHLightingApp::onUpdate(float dt)
 //{
-////    if (input_proc_->flag)
-////        model_program_ = shr::createProgram(string("../data/sh_lighting_vert_") + to_string(L) + ".glsl", \
-////                                            string("../data/sh_lighting_frag_") + to_string(L) + ".glsl");
-
 //    glEnable(GL_DEPTH_TEST);
 
 //    view_ = input_proc_->getCameraView();

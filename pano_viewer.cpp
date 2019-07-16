@@ -17,8 +17,6 @@ void HarmonicIntegral<SH_NUM>::solvePanoImage(const string image_path);
 class PanoViewer : public shr::Renderer
 {
 public:
-//    PanoViewer(string pano, string shl_coef, string obj)
-//        :pano_file_(pano), shl_coef_file_(shl_coef), objfile_(obj) {}
     PanoViewer(string pano, string obj)
         :pano_file_(pano), objfile_(obj) {}
     ~PanoViewer() override = default;
@@ -30,7 +28,6 @@ private:
 
     // parameters
     string pano_file_;      // panorama file
-    //string shl_coef_file_;  // sh-light coeffs file
     string objfile_;        // model file
 
     // objects
@@ -49,12 +46,6 @@ private:
 
 void PanoViewer::onInit()
 {
-    // load or resampling sh coeffs parameters
-//    ifstream ifs(shl_coef_file_);
-//    if (!ifs)
-//        throw runtime_error("open " + shl_coef_file_ + " failed");
-//    for (int i = 0; i < SH_NUM; i++)
-//        ifs >> light_coeffs_[i];
     HarmonicIntegral<SH_NUM> harmonics(SAMPLE_NUM);
     harmonics.solvePanoImage(pano_file_);
     auto coeffs = harmonics.getCoefficients();
@@ -85,9 +76,6 @@ void PanoViewer::onInit()
 
     // setup opengl
     glViewport(0, 0, getWindowWidth(), getWindowHeight());
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
-    //glFrontFace(GL_CCW);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

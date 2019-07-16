@@ -11,8 +11,6 @@ using namespace Eigen;
 Skybox::Skybox(string pano_image)
 {
     auto textures = panoToCubemap(pano_image);
-    //array<string, 6> textures = {"posx.png", "negx.png", "posy.png", "negy.png", "posz.png", "negz.png"};
-
     cubemap_ = loadCubemap(textures);
     cube_    = createSkybox();
     program_ = createSkyboxProgram();
@@ -159,27 +157,6 @@ GLuint shr::createSkybox()
 
 array<string, 6> shr::panoToCubemap(const string &pano)
 {
-    // load pano image
-//    FREE_IMAGE_FORMAT formato = FreeImage_GetFileType(pano.c_str(), 0);//Automatocally detects the format(from over 20 formats!)
-//    FIBITMAP* imagen = FreeImage_Load(formato, pano.c_str());
-//    if (!imagen){
-//        cout << "panorama is not found!" << endl;
-//        exit(0);
-//    }
-
-//    FIBITMAP* temp = imagen;
-//    imagen = FreeImage_ConvertTo32Bits(imagen);
-//    FreeImage_Unload(temp);
-
-//    uint w = FreeImage_GetWidth(imagen);
-//    uint h = FreeImage_GetHeight(imagen);
-//    FreeImage_FlipVertical(imagen);
-//    //FreeImage_FlipHorizontal(imagen);
-
-//    // sort in positive_x negtive_x positive_y negtive_y positive_z negtive_z
-//    RGBQUAD* pixel = (RGBQUAD *)malloc(sizeof(RGBQUAD));
-//    FIBITMAP* cube_image = FreeImage_Allocate(CUBE_RES, CUBE_RES, 32);
-
     cv::Mat img = cv::imread(pano, cv::IMREAD_ANYDEPTH | cv::IMREAD_ANYCOLOR);
     int w = img.cols;
     int h = img.rows;
@@ -201,12 +178,6 @@ array<string, 6> shr::panoToCubemap(const string &pano)
     auto fnegy = [](int x, int y, double delta) { return Vector3d(delta*(y+0.5) - 1, delta*(x+0.5) - 1,  1); };
     auto fposz = [](int x, int y, double delta) { return Vector3d( 1, 1 - delta*(x+0.5), delta*(y+0.5) - 1); };
     auto fnegz = [](int x, int y, double delta) { return Vector3d(-1, delta*(x+0.5) - 1, delta*(y+0.5) - 1); };
-//    auto fposx = [](uint x, uint y, double delta) { return Vector3d( 1, delta*(y+0.5) - 1, delta*(x+0.5) - 1); };
-//    auto fnegx = [](uint x, uint y, double delta) { return Vector3d(-1, delta*(y+0.5) - 1, 1 - delta*(x+0.5)); };
-//    auto fposy = [](uint x, uint y, double delta) { return Vector3d(delta*(x+0.5) - 1,  1, delta*(y+0.5) - 1); };
-//    auto fnegy = [](uint x, uint y, double delta) { return Vector3d(delta*(x+0.5) - 1, -1, 1 - delta*(y+0.5)); };
-//    auto fposz = [](uint x, uint y, double delta) { return Vector3d(1 - delta*(x+0.5), delta*(y+0.5) - 1,  1); };
-//    auto fnegz = [](uint x, uint y, double delta) { return Vector3d(delta*(x+0.5) - 1, delta*(y+0.5) - 1, -1); };
     function<Vector3d(int, int, double)> fa[6] = {fposx, fnegx, fposy, fnegy, fnegz, fposz};
 
     double delta = 2.0 / CUBE_RES;
@@ -228,16 +199,10 @@ array<string, 6> shr::panoToCubemap(const string &pano)
                     cubemap.at<cv::Vec3b>(y,x) = img.at<cv::Vec3b>(pano_y, pano_x);
                 else
                     cubemap.at<cv::Vec3f>(y,x) = img.at<cv::Vec3f>(pano_y, pano_x);
-//                FreeImage_GetPixelColor(imagen, pano_x, pano_y, pixel);
-//                FreeImage_SetPixelColor(cube_image, x, y, pixel);
             }
         }
         cv::imwrite(result[i], cubemap);
-        //FreeImage_Save(FIF_PNG, (FIBITMAP*)cube_image, result[i].c_str());
     }
-
-    //free(pixel);
-    //free(cube_image);
     return result;
 }
 
@@ -251,19 +216,6 @@ GLuint shr::loadCubemap(array<string, 6> facefiles)
 
     for (unsigned int i = 0; i < facefiles.size(); i++)
     {
-        // load image
-//        FREE_IMAGE_FORMAT formato = FreeImage_GetFileType(facefiles[i].c_str(), 0);//Automatocally detects the format(from over 20 formats!)
-//        FIBITMAP* imagen = FreeImage_Load(formato, facefiles[i].c_str());
-
-//        FIBITMAP* temp = imagen;
-//        imagen = FreeImage_ConvertTo32Bits(imagen);
-//        FreeImage_Unload(temp);
-
-//        int w = FreeImage_GetWidth(imagen);
-//        int h = FreeImage_GetHeight(imagen);
-//        FreeImage_FlipVertical(imagen);
-//        char* pixeles = (char*)FreeImage_GetBits(imagen);
-//        //FreeImage loads in BGR format, so you need to swap some bytes(Or use GL_BGR).
         cv::Mat img = cv::imread(facefiles[i], cv::IMREAD_ANYCOLOR | cv::IMREAD_ANYDEPTH);
         int w = img.cols;
         int h = img.rows;

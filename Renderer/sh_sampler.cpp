@@ -99,62 +99,62 @@ void HarmonicIntegral<COEF_NUM>::solvePanoImage(const string image_path)
 }
 
 
-template<int COEF_NUM>
-void HarmonicIntegral<COEF_NUM>::solveRawImage(const string shading_path, const string normal_path)
-{
-    Mat normal_cv  = imread(normal_path);
-    Mat shading_cv = imread(shading_path, IMREAD_GRAYSCALE);
+//template<int COEF_NUM>
+//void HarmonicIntegral<COEF_NUM>::solveRawImage(const string shading_path, const string normal_path)
+//{
+//    Mat normal_cv  = imread(normal_path);
+//    Mat shading_cv = imread(shading_path, IMREAD_GRAYSCALE);
 
-    int rows_raw = normal_cv.rows, cols_raw = normal_cv.cols;
-    //float scale = cols_raw / rows_raw;
-    //int cols = 640; int rows = static_cast<int>(cols / scale);
-    int cols = cols_raw, rows = rows_raw;
-    resize(normal_cv, normal_cv, Size(cols, rows));
-    resize(shading_cv, shading_cv, Size(cols, rows));
+//    int rows_raw = normal_cv.rows, cols_raw = normal_cv.cols;
+//    //float scale = cols_raw / rows_raw;
+//    //int cols = 640; int rows = static_cast<int>(cols / scale);
+//    int cols = cols_raw, rows = rows_raw;
+//    resize(normal_cv, normal_cv, Size(cols, rows));
+//    resize(shading_cv, shading_cv, Size(cols, rows));
 
-    A_ = MatrixXf::Zero(rows*cols, COEF_NUM);
-    b_ = VectorXf::Zero(rows*cols);
+//    A_ = MatrixXf::Zero(rows*cols, COEF_NUM);
+//    b_ = VectorXf::Zero(rows*cols);
 
-    int count = 100000;
-    int sqrt_c = sqrt(static_cast<double>(count));
-    srand(static_cast<unsigned>(time(nullptr)));
-    for (int i = 0; i < rows; i++)
-    {
-        Vec3b *ptr_n = normal_cv.ptr<Vec3b>(i);
-        uchar *ptr_s = shading_cv.ptr<uchar>(i);
-        for (int j = 0; j < cols; j++)
-        {
-            for (int c = 0; c < count; c++)
-            {
-                double phi = 2*PI * (rand() / double(RAND_MAX));
-                double theta = acos(1 - 2*(rand()/double(RAND_MAX)));
-//                double phi = 2*PI * ((0.5+c/sqrt_c) / sqrt_c);
-//                double theta = acos(1 - 2 * ((0.5+i%sqrt_c) / sqrt_c));
-                double rx = sin(theta) * cos(phi);
-                double ry = sin(theta) * sin(phi);
-                double rz = cos(theta);
-                //double x = ptr_n[j][2], y = ptr_n[j][1], z = ptr_n[j][0];
-                double y = ptr_n[j][2], z = ptr_n[j][1], x = ptr_n[j][0];   // camera axis to world axis
-                double dot = rx*x + ry*y + rz*z;
-                if (dot < 0)    continue;
+//    int count = 100000;
+//    int sqrt_c = sqrt(static_cast<double>(count));
+//    srand(static_cast<unsigned>(time(nullptr)));
+//    for (int i = 0; i < rows; i++)
+//    {
+//        Vec3b *ptr_n = normal_cv.ptr<Vec3b>(i);
+//        uchar *ptr_s = shading_cv.ptr<uchar>(i);
+//        for (int j = 0; j < cols; j++)
+//        {
+//            for (int c = 0; c < count; c++)
+//            {
+//                double phi = 2*PI * (rand() / double(RAND_MAX));
+//                double theta = acos(1 - 2*(rand()/double(RAND_MAX)));
+////                double phi = 2*PI * ((0.5+c/sqrt_c) / sqrt_c);
+////                double theta = acos(1 - 2 * ((0.5+i%sqrt_c) / sqrt_c));
+//                double rx = sin(theta) * cos(phi);
+//                double ry = sin(theta) * sin(phi);
+//                double rz = cos(theta);
+//                //double x = ptr_n[j][2], y = ptr_n[j][1], z = ptr_n[j][0];
+//                double y = ptr_n[j][2], z = ptr_n[j][1], x = ptr_n[j][0];   // camera axis to world axis
+//                double dot = rx*x + ry*y + rz*z;
+//                if (dot < 0)    continue;
 
-                double r = sqrt(x*x + y*y + z*z);
-                double basis[COEF_NUM];
-                HarmonicBasis<COEF_NUM>(basis, theta, phi);
-                //HarmonicBasis<COEF_NUM>(basis, acos(z/r), atan(y/x));
-                for (int k = 0; k < COEF_NUM; k++)
-                    A_(i*cols + j, k) += basis[k] * dot / r;    // basis * cos()
-            }
+//                double r = sqrt(x*x + y*y + z*z);
+//                double basis[COEF_NUM];
+//                HarmonicBasis<COEF_NUM>(basis, theta, phi);
+//                //HarmonicBasis<COEF_NUM>(basis, acos(z/r), atan(y/x));
+//                for (int k = 0; k < COEF_NUM; k++)
+//                    A_(i*cols + j, k) += basis[k] * dot / r;    // basis * cos()
+//            }
 
-            b_(i*cols + j) = ptr_s[j];
-        }
-    }
-    A_ /= count / PI;
+//            b_(i*cols + j) = ptr_s[j];
+//        }
+//    }
+//    A_ /= count / PI;
 
-    VectorXf coef = A_.colPivHouseholderQr().solve(b_);
-    for ( int i = 0; i < COEF_NUM; i++)
-        coef_[i] = coef(i);
-}
+//    VectorXf coef = A_.colPivHouseholderQr().solve(b_);
+//    for ( int i = 0; i < COEF_NUM; i++)
+//        coef_[i] = coef(i);
+//}
 
 
 template<int COEF_NUM>
