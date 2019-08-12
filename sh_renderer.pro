@@ -5,7 +5,7 @@ SOURCES += \
     Renderer/graphics.cpp \
     Renderer/framework.cpp \
     Renderer/skybox.cpp \
-    renderer.cpp \
+    #renderer.cpp \
     pano_viewer.cpp \
     Renderer/sh_sampler.cpp
 
